@@ -2,15 +2,17 @@
 Global configuration for the DEX arbitrage scanner.
 """
 
+import os
+
 # =========================
 # RPC endpoints
 # =========================
 
 RPC_ENDPOINTS = {
-    "ethereum": "https://eth.llamarpc.com",
-    "polygon": "https://polygon.llamarpc.com",
-    "bsc": "https://bsc.llamarpc.com",
-    "arbitrum": "https://arbitrum.llamarpc.com",
+    "ethereum": os.getenv("ETH_RPC_URL", "https://eth.llamarpc.com"),
+    "polygon": os.getenv("POLYGON_RPC_URL", "https://polygon.llamarpc.com"),
+    "bsc": os.getenv("BSC_RPC_URL", "https://bsc.llamarpc.com"),
+    "arbitrum": os.getenv("ARBITRUM_RPC_URL", "https://arbitrum.llamarpc.com"),
 }
 
 # =========================
@@ -56,5 +58,12 @@ DEX_CONFIGS = [
 # Scanner parameters
 # =========================
 
-SCAN_MIN_PROFIT_PCT = 0.3
-DEX_TRADING_FEE_PCT = 0.30
+# ✅ REQUIRED by scanner.py
+SCAN_INTERVAL = int(os.getenv("SCAN_INTERVAL", "30"))
+
+# Alias to avoid import mismatch
+MIN_PROFIT_PCT = float(os.getenv("MIN_PROFIT_PCT", "0.3"))
+
+# Existing values (kept)
+SCAN_MIN_PROFIT_PCT = MIN_PROFIT_PCT
+DEX_TRADING_FEE_PCT = float(os.getenv("DEX_TRADING_FEE_PCT", "0.30"))
