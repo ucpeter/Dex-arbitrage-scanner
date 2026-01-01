@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DEX Arbitrage Scanner</title>
+</head>
+<body>
+  <h2>DEX Arbitrage Scanner</h2>
+
+  <form method="post" action="/scan">
+    <label>Select Network:</label>
+    <select name="network">
+      <option value="ethereum">Ethereum</option>
+      <option value="arbitrum">Arbitrum</option>
+      <option value="optimism">Optimism</option>
+      <option value="polygon">Polygon</option>
+      <option value="base">Base</option>
+    </select>
+
+    <button type="submit">Run Scan</button>
+  </form>
+
+  {% if results %}
+    <h3>Results</h3>
+    <pre>{{ results }}</pre>
+  {% endif %}
+</body>
+</html>
