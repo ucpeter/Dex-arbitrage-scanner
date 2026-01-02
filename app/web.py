@@ -2,7 +2,7 @@ from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from app.scanner import scan
+from.scanner import scan
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
