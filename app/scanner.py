@@ -1,5 +1,5 @@
 import json
-from app.tokens import TOKENS
+from.tokens import TOKENS
 from app.config import MIN_GROSS_PROFIT_PCT, ESTIMATED_GAS_PCT, OUTPUT_FILE
 from app.uniswap_v3 import get_uniswap_price
 from app.paraswap_v5 import get_paraswap_price
