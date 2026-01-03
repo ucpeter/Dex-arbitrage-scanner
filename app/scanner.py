@@ -1,9 +1,9 @@
 import json
-from.tokens import TOKENS
-from.config import MIN_GROSS_PROFIT_PCT, ESTIMATED_GAS_PCT, OUTPUT_FILE
-from.uniswap_v3 import get_uniswap_price
-from.paraswap_v5 import get_paraswap_price
 
+from .token import TOKENS
+from .config import MIN_GROSS_PROFIT_PCT, ESTIMATED_GAS_PCT, OUTPUT_FILE
+from .uniswap_v3 import get_uniswap_price
+from .paraswap_v5 import get_paraswap_price
 def scan(network):
     results = []
 
