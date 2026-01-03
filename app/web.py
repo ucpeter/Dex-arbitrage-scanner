@@ -1,11 +1,13 @@
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from.scanner import scan
+from .scanner import run_scan
 
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
+
+templates = Jinja2Templates(directory="template")
+
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
@@ -14,14 +16,12 @@ def home(request: Request):
         {"request": request}
     )
 
-@app.post("/scan", response_class=HTMLResponse)
-def run_scan(request: Request, network: str = Form(...)):
-    results = scan(network)
 
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "results": results
-        }
-    )
+@app.post("/scan")
+def scan(network: str = Form(...)):
+    results = run_scan(network)
+    return {
+        "status": "ok",
+        "count": len(results),
+        "results": results
+    }
