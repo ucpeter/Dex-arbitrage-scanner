@@ -1,27 +1,50 @@
+# app/web.py
+
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from .scanner import run_scan
+from app.scanner import scan_network
 
 app = FastAPI()
 
-templates = Jinja2Templates(directory="template")
+templates = Jinja2Templates(directory="app/templates")
 
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(
         "index.html",
-        {"request": request}
+        {
+            "request": request,
+            "results": [],
+            "network": None,
+            "error": None,
+        },
     )
 
 
-@app.post("/scan")
-def scan(network: str = Form(...)):
-    results = run_scan(network)
-    return {
-        "status": "ok",
-        "count": len(results),
-        "results": results
-    }
+@app.post("/scan", response_class=HTMLResponse)
+def scan(request: Request, network: str = Form(...)):
+    try:
+        results = scan_network(network)
+    except Exception as e:
+        return templates.TemplateResponse(
+            "index.html",
+            {
+                "request": request,
+                "results": [],
+                "network": network,
+                "error": str(e),
+            },
+        )
+
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "results": results,
+            "network": network,
+            "error": None,
+        },
+    )
