@@ -2,26 +2,113 @@
 <html>
 <head>
   <title>DEX Arbitrage Scanner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      vertical-align: top;
+    }
+    th {
+      background: #f5f5f5;
+    }
+    .error {
+      color: red;
+      margin-top: 15px;
+    }
+    .plan {
+      font-size: 13px;
+      background: #fafafa;
+      padding: 6px;
+      border: 1px solid #ddd;
+    }
+  </style>
 </head>
+
 <body>
-  <h2>DEX Arbitrage Scanner</h2>
 
-  <form method="post" action="/scan">
-    <label>Select Network:</label>
-    <select name="network">
-      <option value="ethereum">Ethereum</option>
-      <option value="arbitrum">Arbitrum</option>
-      <option value="optimism">Optimism</option>
-      <option value="polygon">Polygon</option>
-      <option value="base">Base</option>
-    </select>
+<h1>DEX Arbitrage Scanner</h1>
 
-    <button type="submit">Run Scan</button>
-  </form>
+<form method="post" action="/scan">
+  <label>Select Network:</label>
+  <select name="network" required>
+    <option value="">-- select --</option>
+    <option value="ethereum" {% if network=="ethereum" %}selected{% endif %}>Ethereum</option>
+    <option value="base" {% if network=="base" %}selected{% endif %}>Base</option>
+  </select>
 
-  {% if results %}
-    <h3>Results</h3>
-    <pre>{{ results }}</pre>
-  {% endif %}
+  <button type="submit">Run Scan</button>
+</form>
+
+{% if error %}
+  <div class="error">Error: {{ error }}</div>
+{% endif %}
+
+{% if results and results|length > 0 %}
+
+<h2>Opportunities Found: {{ results|length }}</h2>
+
+<table>
+  <tr>
+    <th>Pair</th>
+    <th>Buy</th>
+    <th>Sell</th>
+    <th>Gross %</th>
+    <th>Net %</th>
+    <th>Furucombo Execution Plan</th>
+  </tr>
+
+  {% for r in results %}
+  <tr>
+    <td>{{ r.pair }}</td>
+
+    <td>
+      <b>{{ r.buy.dex }}</b><br>
+      Buy {{ r.buy.token }}<br>
+      Price: {{ r.buy.price }}
+    </td>
+
+    <td>
+      <b>{{ r.sell.dex }}</b><br>
+      Sell {{ r.sell.token }}<br>
+      Price: {{ r.sell.price }}
+    </td>
+
+    <td>{{ r.gross_profit_pct }}%</td>
+    <td>{{ r.net_profit_pct }}%</td>
+
+    <td>
+      <div class="plan">
+        <b>Flashloan</b><br>
+        Token: {{ r.furucombo_plan.flashloan.token }}<br>
+        Amount: {{ r.furucombo_plan.flashloan.amount }}<br><br>
+
+        <b>Steps</b><br>
+        {% for step in r.furucombo_plan.execution_path %}
+          {{ step.step }}.
+          {{ step.action }}
+          {{ step.from_token }}
+          →
+          {{ step.to_token }}
+          on {{ step.dex }}<br>
+        {% endfor %}
+      </div>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% elif network %}
+  <p>No opportunities found.</p>
+{% endif %}
+
 </body>
-</html>
+    </html>
