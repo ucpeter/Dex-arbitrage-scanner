@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from app.scanner import scan_network
+from .scanner import run_scan as scan_network
 
 app = FastAPI()
 
